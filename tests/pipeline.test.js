@@ -11,7 +11,7 @@ function run(dataDir, extra = []) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-replay-'));
   fs.writeFileSync(path.join(tmp, 'nhl.json'), JSON.stringify(nhlReplay()));
   const o = oddsReplay(); fs.writeFileSync(path.join(tmp, 'odds.json'), JSON.stringify(o.out));
-  const out = execFileSync('node', [path.join(ROOT, 'pipeline', 'refresh.js'), '--data', dataDir, '--replay', path.join(tmp, 'nhl.json'), '--odds-replay', path.join(tmp, 'odds.json'), '--now', '2026-10-17T16:00:00Z', '--props', ...extra], { encoding: 'utf8', env: Object.assign({}, process.env, { ODDS_API_KEY: '', GITHUB_STEP_SUMMARY: '' }) });
+  const out = execFileSync('node', [path.join(ROOT, 'pipeline', 'refresh.js'), '--data', dataDir, '--replay', path.join(tmp, 'nhl.json'), '--odds-replay', path.join(tmp, 'odds.json'), '--now', '2026-10-17T16:00:00Z', '--props', ...extra], { encoding: 'utf8', env: Object.assign({}, process.env, { ODDS_API_KEY: '', GITHUB_STEP_SUMMARY: '', GITHUB_ACTIONS: '' }) });
   return { summary: JSON.parse(out.slice(out.indexOf('{'))), gameId: o.gameId };
 }
 
@@ -69,4 +69,19 @@ test('a second run adds nothing and keeps the data stable', () => {
   assert.strictEqual(summary.boxScoresLoaded, 0);
   const after = J(path.join(dir, 'logs-EDM.json'));
   assert.deepStrictEqual(after.sk, before.sk);
+});
+
+test('an Odds API failure keeps the last lines and still saves the NHL data', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-data-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-replay-'));
+  fs.writeFileSync(path.join(tmp, 'nhl.json'), JSON.stringify(nhlReplay()));
+  fs.writeFileSync(path.join(tmp, 'odds.json'), '{}'); // every odds request fails
+  const out = execFileSync('node', [path.join(ROOT, 'pipeline', 'refresh.js'), '--data', dir, '--replay', path.join(tmp, 'nhl.json'), '--odds-replay', path.join(tmp, 'odds.json'), '--now', '2026-10-17T16:00:00Z', '--props'], { encoding: 'utf8', env: Object.assign({}, process.env, { ODDS_API_KEY: '', GITHUB_STEP_SUMMARY: '', GITHUB_ACTIONS: '' }) });
+  const summary = JSON.parse(out.slice(out.indexOf('{')));
+  assert.strictEqual(summary.resultsAdded, 120);
+  assert.strictEqual(summary.boxScoresLoaded, 120);
+  assert.ok(summary.notes.some(n => /^Odds API problem/.test(n)), 'reports the odds problem');
+  assert.match(J(path.join(dir, 'meta.json')).sources, /Odds: not updated this run/);
+  assert.deepStrictEqual(J(path.join(dir, 'odds.json')).games, {});
+  assert.ok(J(path.join(dir, 'feed.json')).results.games.length === 120);
 });

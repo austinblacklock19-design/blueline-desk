@@ -92,4 +92,13 @@ function parseEventProps(ev, game, players) {
   return { props: out, unmatched: [...unmatched] };
 }
 
-module.exports = { SPORT, GAME_MARKETS, PROP_MARKETS, teamAbbrev, matchGame, parseGameOdds, parseEventProps, okHold, norm };
+// Player props are the expensive part (up to 5 credits per game). Pull them only while enough credits stay in
+// reserve for game lines (about 9 a day: 3 credits x 3 runs), so a small plan never runs dry on game lines.
+const PROP_COST = Object.keys(PROP_MARKETS).length;
+function propsBudget(left, games, reserve) {
+  const cost = games * PROP_COST;
+  if (left == null || !isFinite(left)) return { ok: true, left: null, cost, reserve }; // usage unknown (offline replay)
+  return { ok: left - cost >= reserve, left, cost, reserve };
+}
+
+module.exports = { SPORT, GAME_MARKETS, PROP_MARKETS, PROP_COST, teamAbbrev, matchGame, parseGameOdds, parseEventProps, propsBudget, okHold, norm };

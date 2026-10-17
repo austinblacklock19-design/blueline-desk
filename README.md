@@ -27,6 +27,7 @@ The Odds API ──┘        (GitHub Action)            └─> site/ ──> G
 2. **Turn on Pages.** Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 3. **Add your odds key (optional but needed for lines and props).** Sign up at the-odds-api.com, then
    **Settings → Secrets and variables → Actions → New repository secret**, name `ODDS_API_KEY`.
+   Put the key only in that secret box, never in a file: the repository is public.
    Without a key the site still updates results, box scores, rosters, schedules and every model projection;
    it just shows no sportsbook lines.
 4. **Run it once.** **Actions → Refresh data and deploy → Run workflow.** It takes a few minutes. When it
@@ -51,10 +52,13 @@ earlier unless you shift the times.
 ## Costs
 
 - **GitHub Actions and Pages:** free for public repositories.
-- **The Odds API:** each request costs credits equal to markets × regions. Game lines are 3 credits per run.
-  Player props are 5 credits per game, so a 14-game Saturday with two prop runs is about 140 credits.
-  There's a free plan; check their site for current paid plans before a busy month. The job summary shows
-  how many credits you have left.
+- **The Odds API:** game lines cost 3 credits per run, about 9 a day, which fits the free plan (500 credits
+  a month). Player props cost up to 5 credits per game per run, and with two prop runs a night that's
+  roughly 2,000 credits a month, so props need a paid plan (in October 2026, 20,000 credits for $30 a month).
+  The job only pulls props while at least 280 credits stay in reserve for game lines (`oddsReserveCredits`
+  in `pipeline/config.json`), so on the free plan props stop for the rest of the month, never game lines.
+  If the key is wrong or credits run out, the run keeps the last lines, still saves the NHL data, and says
+  so in its summary. Each run's summary shows the credits left.
 - **Chat (optional):** billed to your Claude API key per message. The worker can cap requests per visitor.
 
 ## Turn on the chat

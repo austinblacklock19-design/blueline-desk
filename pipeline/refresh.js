@@ -124,49 +124,69 @@ async function main() {
   // ---------- sportsbook lines (The Odds API) ----------
   const key = process.env.ODDS_API_KEY;
   let oddsNote = 'unchanged (no ODDS_API_KEY set)';
+  // closing lines: the last lines seen before each game started (for the closing-line check on the Model tab)
+  const prev = (docs.odds && docs.odds.games) || {}, closing = (docs.closing && docs.closing.games) || {};
+  const startOf = {}; for (const g of prevSched.concat(sched)) startOf[g[1]] = g[2];
+  for (const [gid, o] of Object.entries(prev)) {
+    const started = have.has(+gid) || (startOf[gid] && Date.parse(startOf[gid]) <= NOW.getTime());
+    if (!started || closing[gid] || !o || !o.books) continue;
+    const bk = o.books.DraftKings ? 'DraftKings' : Object.keys(o.books).find(b => b !== 'Opener' && o.books[b].ml);
+    if (bk) closing[gid] = Object.assign({ book: bk }, o.books[bk]);
+  }
+  docs.closing = { updated: stamp, games: closing };
   if (key || opt('odds-replay')) {
     const odds = makeGetter({ base: 'https://api.the-odds-api.com', replay: opt('odds-replay'), minGapMs: 250 });
-    const prev = (docs.odds && docs.odds.games) || {}, closing = (docs.closing && docs.closing.games) || {};
-    const startOf = {}; for (const g of prevSched.concat(sched)) startOf[g[1]] = g[2];
-    for (const [gid, o] of Object.entries(prev)) {
-      const started = have.has(+gid) || (startOf[gid] && Date.parse(startOf[gid]) <= NOW.getTime());
-      if (!started || closing[gid]) continue;
-      const bk = o.books.DraftKings ? 'DraftKings' : Object.keys(o.books).find(b => b !== 'Opener' && o.books[b].ml);
-      if (bk) closing[gid] = Object.assign({ book: bk }, o.books[bk]);
-    }
-    docs.closing = { updated: stamp, games: closing };
-    const q = `regions=us&oddsFormat=american&dateFormat=iso&apiKey=${key || 'replay'}`;
-    const evs = await odds(`/v4/sports/${ODDS.SPORT}/odds?markets=${ODDS.GAME_MARKETS}&${q}`);
-    const { games, report } = ODDS.parseGameOdds(evs, sched);
-    for (const [gid, o] of Object.entries(games)) { // the first line we ever saw for a game is kept as the "Opener"
-      const was = prev[gid] && prev[gid].books && prev[gid].books.Opener;
-      const first = o.books.DraftKings || o.books[Object.keys(o.books)[0]];
-      o.books.Opener = was || JSON.parse(JSON.stringify(first));
-    }
-    docs.odds = { updated: stamp, games };
-    oddsNote = `${Object.keys(games).length} games from ${new Set(Object.values(games).flatMap(o => Object.keys(o.books))).size - 1} books`;
-    if (report.length) notes.push(...report.slice(0, 5));
-    if (PROPS) {
-      const propsPrev = (docs.props && docs.props.games) || {};
-      const archive = readJSON(path.join(DATA, 'props-closing.json')) || {};
-      for (const [gid, p] of Object.entries(propsPrev)) { const st = startOf[gid]; if ((have.has(+gid) || (st && Date.parse(st) <= NOW.getTime())) && !archive[gid]) archive[gid] = p; }
-      fs.writeFileSync(path.join(DATA, 'props-closing.json'), JSON.stringify(archive));
-      const events = await odds(`/v4/sports/${ODDS.SPORT}/events?dateFormat=iso&apiKey=${key || 'replay'}`);
-      const out = {}; let unmatched = 0;
-      for (const ev of events || []) {
-        const g = ODDS.matchGame(ev, sched); if (!g) continue;
-        const t = Date.parse(g[2]); if (t <= NOW.getTime() || t - NOW.getTime() > CFG.propsWindowHours * 3600e3) continue;
-        const evOdds = await odds(`/v4/sports/${ODDS.SPORT}/events/${ev.id}/odds?markets=${Object.keys(ODDS.PROP_MARKETS).join(',')}&${q}`, { optional: true });
-        if (!evOdds) continue;
-        const r = ODDS.parseEventProps(evOdds, g, players); out[g[1]] = r.props; unmatched += r.unmatched.length;
+    const creditsLeft = () => { const v = odds.lastHeaders && odds.lastHeaders.get && odds.lastHeaders.get('x-requests-remaining'); return v == null || v === '' || !isFinite(+v) ? null : +v; };
+    // An odds problem (bad key, credits used up, API down) must never cost the NHL data: keep the last lines and move on.
+    try {
+      const q =`regions=us&oddsFormat=american&dateFormat=iso&apiKey=${key || 'replay'}`;
+      const evs = await odds(`/v4/sports/${ODDS.SPORT}/odds?markets=${ODDS.GAME_MARKETS}&${q}`);
+      const { games, report } = ODDS.parseGameOdds(evs, sched);
+      for (const [gid, o] of Object.entries(games)) { // the first line we ever saw for a game is kept as the "Opener"
+        const was = prev[gid] && prev[gid].books && prev[gid].books.Opener;
+        const first = o.books.DraftKings || o.books[Object.keys(o.books)[0]];
+        o.books.Opener = was || JSON.parse(JSON.stringify(first));
       }
-      // keep earlier lines for games that already started, so bets on them can still be read back
-      for (const [gid, p] of Object.entries(propsPrev)) if (!out[gid] && sched.some(g => String(g[1]) === gid)) out[gid] = p;
-      docs.props = { updated: stamp, source: 'The Odds API', games: out };
-      oddsNote += `; props for ${Object.keys(out).length} games` + (unmatched ? ` (${unmatched} names not matched)` : '');
+      docs.odds = { updated: stamp, games };
+      oddsNote = `${Object.keys(games).length} games from ${new Set(Object.values(games).flatMap(o => Object.keys(o.books))).size - 1} books`;
+      if (report.length) notes.push(...report.slice(0, 5));
+      if (PROPS) {
+        const propsPrev = (docs.props && docs.props.games) || {};
+        const archive = readJSON(path.join(DATA, 'props-closing.json')) || {};
+        for (const [gid, p] of Object.entries(propsPrev)) { const st = startOf[gid]; if ((have.has(+gid) || (st && Date.parse(st) <= NOW.getTime())) && !archive[gid]) archive[gid] = p; }
+        fs.writeFileSync(path.join(DATA, 'props-closing.json'), JSON.stringify(archive));
+        const events = await odds(`/v4/sports/${ODDS.SPORT}/events?dateFormat=iso&apiKey=${key || 'replay'}`); // free: no credits
+        const todo = [];
+        for (const ev of events || []) {
+          const g = ODDS.matchGame(ev, sched); if (!g) continue;
+          const t = Date.parse(g[2]); if (t <= NOW.getTime() || t - NOW.getTime() > CFG.propsWindowHours * 3600e3) continue;
+          todo.push([ev, g]);
+        }
+        const reserve = CFG.oddsReserveCredits != null ? CFG.oddsReserveCredits : 280;
+        const budget = ODDS.propsBudget(creditsLeft(), todo.length, reserve);
+        const out = {}; let unmatched = 0, saved = 0, fetched = 0;
+        if (budget.ok) for (const [ev, g] of todo) {
+          const left = creditsLeft(); if (left != null && left - ODDS.PROP_COST < reserve) { saved++; continue; }
+          const evOdds = await odds(`/v4/sports/${ODDS.SPORT}/events/${ev.id}/odds?markets=${Object.keys(ODDS.PROP_MARKETS).join(',')}&${q}`, { optional: true });
+          if (!evOdds) continue;
+          const r = ODDS.parseEventProps(evOdds, g, players); out[g[1]] = r.props; unmatched += r.unmatched.length; fetched++;
+        }
+        // keep earlier lines for games still on the schedule (or just started), so bets on them can still be read back
+        for (const [gid, p] of Object.entries(propsPrev)) if (!out[gid] && sched.some(g => String(g[1]) === gid)) out[gid] = p;
+        docs.props = { updated: stamp, source: 'The Odds API', games: out };
+        if (!budget.ok) {
+          const why = `props skipped to save credits: ${budget.left} left, tonight's props need up to ${budget.cost}, and ${reserve} are kept for game lines (oddsReserveCredits in pipeline/config.json)`;
+          oddsNote += '; ' + why; notes.push(why);
+        } else oddsNote += `; props for ${fetched} games` + (saved ? ` (${saved} skipped to save credits)` : '') + (unmatched ? ` (${unmatched} names not matched)` : '');
+      }
+    } catch (e) {
+      const msg = String((e && e.message) || e).replace(/(apikey=)[^&\s]*/ig, '$1***').replace(/\s+/g, ' ').slice(0, 300);
+      oddsNote = `not updated this run (${e && e.status ? 'HTTP ' + e.status : 'request failed'}), last lines kept`;
+      notes.push('Odds API problem: ' + msg);
+      if (process.env.GITHUB_ACTIONS) console.log('::warning title=Odds API::' + msg);
     }
-    const left = odds.lastHeaders && odds.lastHeaders.get && odds.lastHeaders.get('x-requests-remaining');
-    if (left) oddsNote += `; ${left} credits left this month`;
+    const left = creditsLeft();
+    if (left != null) oddsNote += `; ${left} credits left this month`;
   }
   if (!docs.props) docs.props = { updated: stamp, source: '', games: {} };
   if (!docs.odds) docs.odds = { updated: stamp, games: {} };

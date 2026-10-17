@@ -24,7 +24,7 @@ function makeGetter({ base, replay, record, minGapMs = 120, headers = {} }) {
         const res = await fetch(url, { headers: Object.assign({ 'user-agent': 'blueline-desk (github.com)', accept: 'application/json' }, headers), signal: AbortSignal.timeout(30000) }); // a stuck request is retried, not waited on
         if (res.status === 404 && optional) return null;
         if (res.status === 429 || res.status >= 500) throw new Error('HTTP ' + res.status);
-        if (!res.ok) { const t = await res.text(); throw Object.assign(new Error('HTTP ' + res.status + ' ' + url + ' ' + t.slice(0, 200)), { fatal: true }); }
+        if (!res.ok) { const t = await res.text(); throw Object.assign(new Error('HTTP ' + res.status + ' ' + url.replace(/(apikey=)[^&]*/i, '$1***') + ' ' + t.slice(0, 200)), { fatal: true, status: res.status }); } // never print the API key
         const body = await res.json();
         get.lastHeaders = res.headers;
         if (record) recorded[p] = body;

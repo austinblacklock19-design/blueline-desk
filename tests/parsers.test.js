@@ -33,3 +33,12 @@ test('odds parsing drops prices with an impossible margin and a flipped puck lin
   assert.deepStrictEqual(games[99].books.Good.pl, [1.5, -205, -1.5, 170]);
   assert.ok(!games[99].books.Bad, 'both plus-money moneyline prices and a puck line with -1.5 on the underdog are both dropped');
 });
+
+test('props are only pulled while game-line credits stay in reserve', () => {
+  assert.strictEqual(ODDS.PROP_COST, 5);
+  assert.deepStrictEqual(ODDS.propsBudget(null, 7, 280), { ok: true, left: null, cost: 35, reserve: 280 }); // usage unknown
+  assert.strictEqual(ODDS.propsBudget(500, 7, 280).ok, true);   // a fresh free plan can afford one night
+  assert.strictEqual(ODDS.propsBudget(315, 7, 280).ok, true);   // exactly the reserve left afterwards
+  assert.strictEqual(ODDS.propsBudget(314, 7, 280).ok, false);  // one credit short
+  assert.strictEqual(ODDS.propsBudget(19000, 14, 280).ok, true);
+});
