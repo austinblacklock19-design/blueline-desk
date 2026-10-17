@@ -21,7 +21,7 @@ function makeGetter({ base, replay, record, minGapMs = 120, headers = {} }) {
       const wait = last + minGapMs - Date.now(); if (wait > 0) await new Promise(r => setTimeout(r, wait));
       last = Date.now();
       try {
-        const res = await fetch(url, { headers: Object.assign({ 'user-agent': 'blueline-desk (github.com)', accept: 'application/json' }, headers) });
+        const res = await fetch(url, { headers: Object.assign({ 'user-agent': 'blueline-desk (github.com)', accept: 'application/json' }, headers), signal: AbortSignal.timeout(30000) }); // a stuck request is retried, not waited on
         if (res.status === 404 && optional) return null;
         if (res.status === 429 || res.status >= 500) throw new Error('HTTP ' + res.status);
         if (!res.ok) { const t = await res.text(); throw Object.assign(new Error('HTTP ' + res.status + ' ' + url + ' ' + t.slice(0, 200)), { fatal: true }); }

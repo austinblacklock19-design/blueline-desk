@@ -806,7 +806,7 @@ function viewModel() {
           h('p', null, 'Each team gets an attack and a defense rating from goals scored and allowed, adjusted for who they played and where, with recent games weighted more. Last season, pulled toward average, acts as a starting point so a hot first week does not run away with the ratings.'),
           h('p', null, 'For a game, the ratings give each team\'s expected goals. A Poisson model turns those into the chance of every regulation score, with extra weight on ties and a share of one-goal leads turned into empty-net wins. Ties go to OT and the shootout, where the better team keeps only part of its edge.'),
           h('p', null, 'That score grid prices the moneyline, puck line and total. The market\'s price, with the bookmaker\'s margin removed and averaged across books, is blended in by the dial on the left. Expected value uses that blend at the best price available. Stakes come from fractional Kelly with a cap.'),
-          h('p', null, 'Twice a day a scheduled Claude run pulls new results, box scores, standings, lines from several books and goalie news, then writes a short brief for each game.'))))),
+          h('p', null, SITE ? 'Three times a day a scheduled job pulls new results, box scores, rosters and the schedule from the NHL, checks them against the official standings, and pulls lines and player props from The Odds API, then rebuilds this page. Starting goalies are projected from recent starts.' : 'Twice a day a scheduled Claude run pulls new results, box scores, standings, lines from several books and goalie news, then writes a short brief for each game.'))))),
     footer());
 }
 

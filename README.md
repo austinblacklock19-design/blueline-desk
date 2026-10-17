@@ -29,8 +29,9 @@ The Odds API ──┘        (GitHub Action)            └─> site/ ──> G
    **Settings → Secrets and variables → Actions → New repository secret**, name `ODDS_API_KEY`.
    Without a key the site still updates results, box scores, rosters, schedules and every model projection;
    it just shows no sportsbook lines.
-4. **Run it once.** **Actions → Refresh data and deploy → Run workflow.** When it finishes, the job summary
-   links to your site (`https://<you>.github.io/blueline-desk/`). After that it runs on its own.
+4. **Run it once.** **Actions → Refresh data and deploy → Run workflow.** It takes a few minutes. When it
+   finishes, the run's summary links to your site (`https://<you>.github.io/blueline-desk/`). After that it
+   runs on its own. If Pages isn't on yet, the run still saves the data and its summary says what to switch on.
 
 Share that link with friends. Each person's bets save in their own browser (My Bets has Export and Import
 to move them between devices).
@@ -65,7 +66,7 @@ bets, and it can put a bet slip in front of them, which they confirm to record. 
 
 ## Run it on your computer
 
-Needs Node.js 20 or newer.
+Needs Node.js 22 or newer.
 
 ```
 npm run refresh        # pull fresh data into data/ (add ODDS_API_KEY=... in front for lines)
@@ -92,12 +93,18 @@ model's expected goals scale his goals and assists. Shots and points use negativ
 Goalies get expected shots against from both teams' shot rates, a save rate pulled toward league average,
 and a small chance of being pulled.
 
-**How good is it?** On this season's games, predicting each game only from earlier games:
-- The team model picked 58.5% of winners, with a lower log loss than "the home team wins 53.5%".
-- The props model had 18% less error than each player's season average on 3+ shots on goal,
-  and 24% less on 1+ point, and its probabilities were well calibrated.
-The Model tab shows these live and lets you change every assumption. Judge it over hundreds of bets
-on closing line value, not a week of results.
+**How good is it?** On the first 120 games of this season (through October 16), predicting each game only
+from earlier games:
+- The team model picked 59.2% of winners. Home teams won 55.0% of those games, and the model's log loss
+  (0.659) beat a flat "the home team wins 53.5%" (0.689).
+- Across 3,744 player-games, the props model had 18% lower log loss than each player's season-to-date
+  average on 3+ shots on goal and 24% lower on 1+ point. Its probabilities matched how often things
+  happened: players it gave a 20–40% chance of 3+ shots averaged a 28.8% forecast and hit 28.0% of the time.
+  It ran a little low on the likeliest outcomes.
+
+A season-to-date average is an easy baseline to beat this early, and 120 games is a small sample. The Model
+tab keeps these numbers current and lets you change every assumption. Judge it over hundreds of bets on
+closing line value, not a week of results.
 
 ## Project layout
 

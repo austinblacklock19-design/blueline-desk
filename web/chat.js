@@ -38,7 +38,7 @@ function chatData() {
     `Their bets: ${settled.filter(x => x.st === 'won').length}-${settled.filter(x => x.st === 'lost').length} settled, P/L ${sMoney(pnl)}. Open: ${open || 'none'}.`,
     `Power ratings (% vs average): top ${pw.slice(0, 5).map(t => t + ' ' + D.rtNow.R[t].power).join(', ')}; bottom ${pw.slice(-5).map(t => t + ' ' + D.rtNow.R[t].power).join(', ')}.`,
     `Recent finals: ${last}.`,
-    S.feed.brief && S.feed.brief.summary ? `Today's brief: ${S.feed.brief.headline}. ${S.feed.brief.summary}` : '',
+    S.feed.brief && S.feed.brief.summary && dates.includes(S.feed.brief.date) ? `Brief for ${fmtDay(S.feed.brief.date, true)}: ${S.feed.brief.headline}. ${S.feed.brief.summary}` : '',
     'SLATE (game ids in brackets):\n' + (slate || 'No upcoming games loaded.'),
     chatProps(dates[0])
   ].filter(Boolean).join('\n');
