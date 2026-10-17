@@ -1,0 +1,276 @@
+{
+  "date": "2026-10-17",
+  "games": {
+    "2026020121": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "3-1-0, 2.98, .885",
+          "name": "Jake Allen",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "1-1-0, 3.05, .898",
+          "name": "Charlie Lindgren",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Jake Allen and Charlie Lindgren are the projected starters, neither confirmed. Both clubs are rested. The total opened at 6 and has moved to 6.5 at DraftKings, bet365, Fanatics and BetRivers, while Washington remains a modest home favorite near -125."
+    },
+    "2026020122": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "4-0-0, 1.73, .911",
+          "name": "Pyotr Kochetkov",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "3-0-2, 2.75, .905",
+          "name": "Stuart Skinner",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Pyotr Kochetkov (4-0-0) is projected for Carolina and Stuart Skinner for Winnipeg; neither is confirmed for the early matinee. Carolina has firmed slightly from -180 to about -185. The total opened at 6 and is now 6.5 at four books."
+    },
+    "2026020123": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "1-1-1, 2.57, .927",
+          "name": "Leevi Merilainen",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "4-2-0, 2.53, .885",
+          "name": "Andrei Vasilevskiy",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Leevi Merilainen is projected for Vancouver against Andrei Vasilevskiy, both unconfirmed. Tampa Bay has moved from -375 at open to roughly -400 to -455, and most books now hang the puck line at 2.5 goals rather than 1.5. Vancouver arrives 2-6-1."
+    },
+    "2026020124": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "2-1-1, 2.70, .909",
+          "name": "Philipp Grubauer",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "2-1-1, 3.24, .876",
+          "name": "Akira Schmid",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Philipp Grubauer is projected for Seattle and Akira Schmid for Florida, neither confirmed. Florida is about a -190 home favorite, little changed from the open. The total opened at 6 and has moved to 6.5 at DraftKings, bet365, Fanatics and BetRivers."
+    },
+    "2026020125": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "0-1-1, 1.92, .902",
+          "name": "Semyon Varlamov",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "1-2-2, 3.33, .896",
+          "name": "Sergei Bobrovsky",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Semyon Varlamov is projected for the Islanders and Sergei Bobrovsky for Toronto, both unconfirmed. Toronto has eased from -145 at open to about -135. The total opened at 6 and is now 6.5 at most books."
+    },
+    "2026020126": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "3-2-1, 3.52, .854",
+          "name": "Ukko-Pekka Luukkonen",
+          "status": "Projected"
+        },
+        "home": {
+          "adj": 0,
+          "line": "1-0-0, 2.77, .824",
+          "name": "Jacob Fowler",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Ukko-Pekka Luukkonen is expected for Buffalo; Montreal had not named its starter after Friday's practice, with Jacob Fowler or Jakub Dobes in line. Rasmus Dahlin was called a game-time question by Buffalo, and Montreal is without Florian Xhekaj, with Mike Matheson and Juraj Slafkovsky uncertain. Montreal is about -143, up from -140 at open; total steady at 6.5."
+    },
+    "2026020127": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "2-0-0, 1.89, .933",
+          "name": "Alex Nedeljkovic",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "1-0-1, 0.79, .965",
+          "name": "Daniil Tarasov",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Alex Nedeljkovic is projected for San Jose and Daniil Tarasov for Detroit, neither confirmed. Detroit is about -135, unchanged from the open. The total opened at 6 and has moved to 6.5 everywhere."
+    },
+    "2026020128": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "6-0-0, 1.20, .949",
+          "name": "Linus Ullmark",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "0-3-2, 2.76, .916",
+          "name": "Joseph Woll",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Linus Ullmark (6-0-0) is projected for Ottawa. Philadelphia's starter is unclear: Daily Faceoff lists Joseph Woll, while other previews point to Dan Vladar. Ottawa's Jake Sanderson is day-to-day and Artem Zub may debut; Philadelphia hopes to get Cam York, Rasmus Ristolainen and Travis Konecny back. Ottawa has moved from -145 to about -155; total 5.5."
+    },
+    "2026020129": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "3-2-0, 2.05, .915",
+          "name": "Dylan Garand",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "1-2-0, 3.42, .874",
+          "name": "Jet Greaves",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Dylan Garand is projected for the Rangers and Jet Greaves for Columbus, both unconfirmed. Columbus has played only five games, fewest in the league. Columbus is about -135 at home; the total opened at 6 and is 6.5 at most books."
+    },
+    "2026020130": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "2-2-1, 1.20, .943",
+          "name": "Jake Oettinger",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "3-3-0, 3.51, .891",
+          "name": "Spencer Knight",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Jake Oettinger is projected for Dallas and Spencer Knight for Chicago, neither confirmed. Dallas is roughly a -200 road favorite. The total opened at 6 and has dropped to 5.5 at DraftKings, Fanatics and BetRivers, though bet365 shows 6.5."
+    },
+    "2026020131": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "2-2-1, 2.43, .905",
+          "name": "Joel Hofer",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "2-2-2, 2.95, .904",
+          "name": "Juuse Saros",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Joel Hofer is projected for St. Louis and Juuse Saros for Nashville, though Jordan Binnington and the newly activated Justus Annunen are options. Pavel Buchnevich is expected back for St. Louis after a personal absence; the Blues remain without Dillon Dube and Alexey Toropchenko. The total has moved from 6 to 5.5 at several books, with St. Louis a slight favorite near -115."
+    },
+    "2026020132": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "5-1-0, 1.99, .930",
+          "name": "Jeremy Swayman",
+          "status": "Projected"
+        },
+        "home": {
+          "adj": 0,
+          "line": "0-3-1, 4.52, .844",
+          "name": "Darcy Kuemper",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Boston plays the second half of a back-to-back after winning 4-2 in Anaheim with backup Michael DiPietro, so Jeremy Swayman (5-1-0) is projected to return. Darcy Kuemper is projected for Los Angeles, which is still winless at 0-3-2. The Kings have eased from -150 to about -137, and the total has dropped from 6 to 5.5 at several books."
+    },
+    "2026020133": {
+      "goalies": {
+        "away": {
+          "adj": 0,
+          "line": "4-1-0, 2.82, .897",
+          "name": "Devon Levi",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "5-1-0, 2.39, .898",
+          "name": "Karel Vejmelka",
+          "status": "Unconfirmed"
+        }
+      },
+      "note": "Devon Levi is projected for Edmonton and Karel Vejmelka for Utah, neither confirmed. Edmonton has moved from +120 at open to around +114, with Utah near -135. The total is 6.5 with the over shaded near -120."
+    },
+    "2026020134": {
+      "goalies": {
+        "away": {
+          "adj": -0.25,
+          "line": "",
+          "name": "Sergei Murashov",
+          "status": "Unconfirmed"
+        },
+        "home": {
+          "adj": 0,
+          "line": "4-2-0, 2.34, .911",
+          "name": "Carter Hart",
+          "status": "Projected"
+        }
+      },
+      "note": "Pittsburgh is on the second night of a back-to-back after a 5-2 loss in Colorado; one preview expects backup Sergei Murashov to start, though Daily Faceoff still lists Arturs Silovs. Carter Hart is expected for Vegas. Vegas has eased from -235 at open to about -210 to -218; total 6.5."
+    }
+  },
+  "headline": "14-game Saturday; Swayman back, Pittsburgh on a back-to-back",
+  "sources": [
+    {
+      "title": "Daily Faceoff starting goalies (Oct 17)",
+      "url": "https://www.dailyfaceoff.com/starting-goalies/2026-10-17"
+    },
+    {
+      "title": "Inside the Rink: STL at NSH preview",
+      "url": "https://insidetherink.com/nhl-game-preview-st-louis-blues-at-nashville-predators-with-line-combinations-10-17-2026/"
+    },
+    {
+      "title": "Inside the Rink: OTT at PHI preview",
+      "url": "https://insidetherink.com/nhl-game-preview-ottawa-senators-at-philadelphia-flyers-with-line-combinations-10-17-2026/"
+    },
+    {
+      "title": "Last Word on Sports: Sabres at Canadiens",
+      "url": "https://lastwordonsports.com/hockey/2026/10/17/nhl-predictions-sabres-habs/"
+    },
+    {
+      "title": "Sportsgambler: Penguins at Golden Knights",
+      "url": "https://sportsgambler.com/betting-tips/ice-hockey/pittsburgh-penguins-vs-vegas-golden-knights-prediction-odds-2026-10-17"
+    },
+    {
+      "title": "Sportsbook Review NHL odds",
+      "url": "https://www.sportsbookreview.com/betting-odds/nhl-hockey/"
+    },
+    {
+      "title": "NHL scores and standings API",
+      "url": "https://api-web.nhle.com/v1/standings/now"
+    }
+  ],
+  "summary": "All 14 Saturday starters were unconfirmed as of the morning pull. Totals have climbed from 6 to 6.5 in several Eastern games and dropped to 5.5 in Dallas-Chicago, St. Louis-Nashville and Boston-Los Angeles.",
+  "updated": "2026-10-17T14:20:00Z"
+}

@@ -1,0 +1,27 @@
+<title>Blueline Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>/*CSS*/</style>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#board" aria-label="Blueline Desk home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Blueline<span>Desk</span></span></a>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" data-tab="board">Tonight</button>
+      <button class="tab" role="tab" data-tab="props">Props</button>
+      <button class="tab" role="tab" data-tab="teams">Teams</button>
+      <button class="tab" role="tab" data-tab="bets">My Bets<span class="ct" id="bets-ct"></span></button>
+      <button class="tab" role="tab" data-tab="model">Model</button>
+    </nav>
+    <div class="feed-status" id="feed-status" aria-live="polite"></div>
+  </div>
+</header>
+<main id="view"></main>
+<div id="drawer-host"></div>
+<div id="pdrawer-host"></div>
+<div id="chat-host"></div>
+<script>window.BL_CONFIG = { mode: "artifact", feedUrl: "feed.json", assetBase: "" }; window.__HEADS__ = /*HEADS*/;</script>
+<script>/*MODEL*/</script>
+<script>/*PROPSMODEL*/</script>
+<script>/*APP*/</script>

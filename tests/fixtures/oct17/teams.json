@@ -1,0 +1,487 @@
+{
+  "last": {
+    "ANA": {
+      "ga": 288,
+      "gf": 273,
+      "gp": 82,
+      "l": 33,
+      "otl": 6,
+      "pts": 92,
+      "w": 43
+    },
+    "BOS": {
+      "ga": 250,
+      "gf": 272,
+      "gp": 82,
+      "l": 27,
+      "otl": 10,
+      "pts": 100,
+      "w": 45
+    },
+    "BUF": {
+      "ga": 241,
+      "gf": 288,
+      "gp": 82,
+      "l": 23,
+      "otl": 9,
+      "pts": 109,
+      "w": 50
+    },
+    "CAR": {
+      "ga": 240,
+      "gf": 296,
+      "gp": 82,
+      "l": 22,
+      "otl": 7,
+      "pts": 113,
+      "w": 53
+    },
+    "CBJ": {
+      "ga": 253,
+      "gf": 253,
+      "gp": 82,
+      "l": 30,
+      "otl": 12,
+      "pts": 92,
+      "w": 40
+    },
+    "CGY": {
+      "ga": 259,
+      "gf": 212,
+      "gp": 82,
+      "l": 39,
+      "otl": 9,
+      "pts": 77,
+      "w": 34
+    },
+    "CHI": {
+      "ga": 275,
+      "gf": 213,
+      "gp": 82,
+      "l": 39,
+      "otl": 14,
+      "pts": 72,
+      "w": 29
+    },
+    "COL": {
+      "ga": 203,
+      "gf": 302,
+      "gp": 82,
+      "l": 16,
+      "otl": 11,
+      "pts": 121,
+      "w": 55
+    },
+    "DAL": {
+      "ga": 226,
+      "gf": 279,
+      "gp": 82,
+      "l": 20,
+      "otl": 12,
+      "pts": 112,
+      "w": 50
+    },
+    "DET": {
+      "ga": 258,
+      "gf": 241,
+      "gp": 82,
+      "l": 31,
+      "otl": 10,
+      "pts": 92,
+      "w": 41
+    },
+    "EDM": {
+      "ga": 269,
+      "gf": 282,
+      "gp": 82,
+      "l": 30,
+      "otl": 11,
+      "pts": 93,
+      "w": 41
+    },
+    "FLA": {
+      "ga": 276,
+      "gf": 251,
+      "gp": 82,
+      "l": 38,
+      "otl": 4,
+      "pts": 84,
+      "w": 40
+    },
+    "LAK": {
+      "ga": 247,
+      "gf": 225,
+      "gp": 82,
+      "l": 27,
+      "otl": 20,
+      "pts": 90,
+      "w": 35
+    },
+    "MIN": {
+      "ga": 240,
+      "gf": 272,
+      "gp": 82,
+      "l": 24,
+      "otl": 12,
+      "pts": 104,
+      "w": 46
+    },
+    "MTL": {
+      "ga": 256,
+      "gf": 283,
+      "gp": 82,
+      "l": 24,
+      "otl": 10,
+      "pts": 106,
+      "w": 48
+    },
+    "NJD": {
+      "ga": 254,
+      "gf": 230,
+      "gp": 82,
+      "l": 37,
+      "otl": 3,
+      "pts": 87,
+      "w": 42
+    },
+    "NSH": {
+      "ga": 269,
+      "gf": 247,
+      "gp": 82,
+      "l": 34,
+      "otl": 10,
+      "pts": 86,
+      "w": 38
+    },
+    "NYI": {
+      "ga": 241,
+      "gf": 233,
+      "gp": 82,
+      "l": 34,
+      "otl": 5,
+      "pts": 91,
+      "w": 43
+    },
+    "NYR": {
+      "ga": 250,
+      "gf": 238,
+      "gp": 82,
+      "l": 39,
+      "otl": 9,
+      "pts": 77,
+      "w": 34
+    },
+    "OTT": {
+      "ga": 246,
+      "gf": 278,
+      "gp": 82,
+      "l": 27,
+      "otl": 11,
+      "pts": 99,
+      "w": 44
+    },
+    "PHI": {
+      "ga": 243,
+      "gf": 250,
+      "gp": 82,
+      "l": 27,
+      "otl": 12,
+      "pts": 98,
+      "w": 43
+    },
+    "PIT": {
+      "ga": 268,
+      "gf": 293,
+      "gp": 82,
+      "l": 25,
+      "otl": 16,
+      "pts": 98,
+      "w": 41
+    },
+    "SEA": {
+      "ga": 263,
+      "gf": 226,
+      "gp": 82,
+      "l": 37,
+      "otl": 11,
+      "pts": 79,
+      "w": 34
+    },
+    "SJS": {
+      "ga": 292,
+      "gf": 251,
+      "gp": 82,
+      "l": 35,
+      "otl": 8,
+      "pts": 86,
+      "w": 39
+    },
+    "STL": {
+      "ga": 258,
+      "gf": 231,
+      "gp": 82,
+      "l": 33,
+      "otl": 12,
+      "pts": 86,
+      "w": 37
+    },
+    "TBL": {
+      "ga": 231,
+      "gf": 290,
+      "gp": 82,
+      "l": 26,
+      "otl": 6,
+      "pts": 106,
+      "w": 50
+    },
+    "TOR": {
+      "ga": 299,
+      "gf": 253,
+      "gp": 82,
+      "l": 36,
+      "otl": 14,
+      "pts": 78,
+      "w": 32
+    },
+    "UTA": {
+      "ga": 240,
+      "gf": 268,
+      "gp": 82,
+      "l": 33,
+      "otl": 6,
+      "pts": 92,
+      "w": 43
+    },
+    "VAN": {
+      "ga": 316,
+      "gf": 216,
+      "gp": 82,
+      "l": 49,
+      "otl": 8,
+      "pts": 58,
+      "w": 25
+    },
+    "VGK": {
+      "ga": 250,
+      "gf": 265,
+      "gp": 82,
+      "l": 26,
+      "otl": 17,
+      "pts": 95,
+      "w": 39
+    },
+    "WPG": {
+      "ga": 260,
+      "gf": 231,
+      "gp": 82,
+      "l": 35,
+      "otl": 12,
+      "pts": 82,
+      "w": 35
+    },
+    "WSH": {
+      "ga": 244,
+      "gf": 263,
+      "gp": 82,
+      "l": 30,
+      "otl": 9,
+      "pts": 95,
+      "w": 43
+    }
+  },
+  "teams": [
+    {
+      "a": "VGK",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "Vegas Golden Knights"
+    },
+    {
+      "a": "CAR",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "Carolina Hurricanes"
+    },
+    {
+      "a": "UTA",
+      "conf": "Western",
+      "div": "Central",
+      "name": "Utah Mammoth"
+    },
+    {
+      "a": "OTT",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Ottawa Senators"
+    },
+    {
+      "a": "NYR",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "New York Rangers"
+    },
+    {
+      "a": "EDM",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "Edmonton Oilers"
+    },
+    {
+      "a": "MIN",
+      "conf": "Western",
+      "div": "Central",
+      "name": "Minnesota Wild"
+    },
+    {
+      "a": "SEA",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "Seattle Kraken"
+    },
+    {
+      "a": "BOS",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Boston Bruins"
+    },
+    {
+      "a": "TBL",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Tampa Bay Lightning"
+    },
+    {
+      "a": "WPG",
+      "conf": "Western",
+      "div": "Central",
+      "name": "Winnipeg Jets"
+    },
+    {
+      "a": "FLA",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Florida Panthers"
+    },
+    {
+      "a": "COL",
+      "conf": "Western",
+      "div": "Central",
+      "name": "Colorado Avalanche"
+    },
+    {
+      "a": "BUF",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Buffalo Sabres"
+    },
+    {
+      "a": "ANA",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "Anaheim Ducks"
+    },
+    {
+      "a": "WSH",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "Washington Capitals"
+    },
+    {
+      "a": "NJD",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "New Jersey Devils"
+    },
+    {
+      "a": "SJS",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "San Jose Sharks"
+    },
+    {
+      "a": "TOR",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Toronto Maple Leafs"
+    },
+    {
+      "a": "NYI",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "New York Islanders"
+    },
+    {
+      "a": "STL",
+      "conf": "Western",
+      "div": "Central",
+      "name": "St. Louis Blues"
+    },
+    {
+      "a": "DAL",
+      "conf": "Western",
+      "div": "Central",
+      "name": "Dallas Stars"
+    },
+    {
+      "a": "NSH",
+      "conf": "Western",
+      "div": "Central",
+      "name": "Nashville Predators"
+    },
+    {
+      "a": "PIT",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "Pittsburgh Penguins"
+    },
+    {
+      "a": "MTL",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Montreal Canadiens"
+    },
+    {
+      "a": "DET",
+      "conf": "Eastern",
+      "div": "Atlantic",
+      "name": "Detroit Red Wings"
+    },
+    {
+      "a": "CHI",
+      "conf": "Western",
+      "div": "Central",
+      "name": "Chicago Blackhawks"
+    },
+    {
+      "a": "VAN",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "Vancouver Canucks"
+    },
+    {
+      "a": "CBJ",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "Columbus Blue Jackets"
+    },
+    {
+      "a": "PHI",
+      "conf": "Eastern",
+      "div": "Metropolitan",
+      "name": "Philadelphia Flyers"
+    },
+    {
+      "a": "LAK",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "Los Angeles Kings"
+    },
+    {
+      "a": "CGY",
+      "conf": "Western",
+      "div": "Pacific",
+      "name": "Calgary Flames"
+    }
+  ],
+  "updated": "2026-10-16T17:00:00Z"
+}

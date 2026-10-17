@@ -1,0 +1,16 @@
+{
+  "name": "blueline-desk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NHL betting desk: team and player-prop models, live sportsbook lines, a bet tracker and an AI analyst.",
+  "scripts": {
+    "refresh": "node pipeline/refresh.js",
+    "refresh:props": "node pipeline/refresh.js --props",
+    "headshots": "python3 pipeline/headshots.py",
+    "build": "node scripts/build-site.js",
+    "build:artifact": "node scripts/build-artifact.js",
+    "dev": "node scripts/build-site.js && node scripts/serve.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": { "node": ">=20" }
+}

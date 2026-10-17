@@ -1,0 +1,6 @@
+{
+  "by": "Claude scheduled refresh",
+  "season": "20262027",
+  "sources": "NHL stats API (api-web.nhle.com) for results, standings check (32/32 match, morning run) and schedule; odds from Sportsbook Review (Oct 17 lines; Oct 18 not yet posted); goalies from Daily Faceoff and team previews (all unconfirmed at morning pull). Puck lines dropped: VAN-TBL books quoting 2.5, NJD-WSH at DraftKings, and STL-NSH at Opener, DraftKings and Caesars (-1.5 side not the moneyline favorite).",
+  "updated": "2026-10-17T14:20:00Z"
+}

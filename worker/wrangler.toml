@@ -1,0 +1,13 @@
+name = "blueline-chat"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+# Optional per-visitor daily cap: create a KV namespace, put its id here, and set DAILY_LIMIT.
+# [[kv_namespaces]]
+# binding = "RATE"
+# id = "<your KV namespace id>"
+
+[vars]
+ALLOWED_ORIGINS = ""
+# MODEL = "claude-sonnet-5-5"
+# DAILY_LIMIT = "60"

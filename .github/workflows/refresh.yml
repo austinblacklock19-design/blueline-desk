@@ -1,0 +1,77 @@
+name: Refresh data and deploy
+
+on:
+  schedule:
+    # GitHub runs schedules in UTC. Central time is UTC-5 in daylight time, UTC-6 from early November.
+    - cron: '10 13 * * *'   # ~8:10 AM Central: last night's results and box scores, rosters, lines
+    - cron: '40 20 * * *'   # ~3:40 PM Central: lines and player props for tonight
+    - cron: '20 23 * * *'   # ~6:20 PM Central: late line moves and props before the later games
+  workflow_dispatch:
+    inputs:
+      props:
+        description: 'Also pull player prop lines (5 Odds API credits per game)'
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+    paths: ['web/**', 'model/**', 'scripts/**', 'pipeline/**']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Refresh data
+        if: github.event_name != 'push'
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          PROPS: ${{ (github.event_name == 'workflow_dispatch' && inputs.props) || (github.event_name == 'schedule' && github.event.schedule != '10 13 * * *') }}
+        run: node pipeline/refresh.js
+
+      - name: Rebuild headshot sheets if rosters changed
+        if: github.event_name != 'push'
+        run: |
+          if [ -s data/heads-needed.json ] && [ "$(cat data/heads-needed.json)" != "[]" ]; then
+            pip install --quiet pillow
+            python3 pipeline/headshots.py
+          fi
+
+      - name: Test
+        run: node --test tests/*.test.js
+
+      - name: Save data
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "blueline-bot"
+          git config user.email "blueline-bot@users.noreply.github.com"
+          git add data web/p
+          if ! git diff --cached --quiet; then
+            git commit -m "Data refresh $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
+            git push
+          fi
+
+      - name: Build site
+        run: node scripts/build-site.js
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
