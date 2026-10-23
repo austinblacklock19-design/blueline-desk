@@ -444,7 +444,7 @@ function viewBoard() {
     h('div', { style: { minWidth: 0 } }, h('strong', null, 'New here? '), 'Each card shows the model\'s win chances and the best price for each bet. Green EV means the price beats the model. Tap a game for the full breakdown, or ',
       h('button', { class: 'linkish', onclick: () => { C.open = true; renderChatShell(); } }, 'ask the desk'), ' for a pick. Track bets to see how you\'re doing.'),
     h('button', { class: 'btn sm ghost', onclick: () => { lsSet('bl.intro.v1', true); render(); } }, 'Got it'));
-  return h('div', { class: 'view' }, intro, head, rail, cards, valueTable(allMk), footer());
+  return h('div', { class: 'view' }, installCard(), intro, head, rail, cards, valueTable(allMk), footer());
 }
 
 function gameCard(g) {
@@ -812,7 +812,45 @@ function viewModel() {
 
 function footer() {
   return h('div', { class: 'foot' }, h('span', null, 'For adults of legal betting age. Model output is an estimate, not a guarantee. Bet only what you can afford to lose. Problem gambling help: 1-800-GAMBLER (call or text).'),
-    h('span', null, (window.BL_CONFIG && window.BL_CONFIG.sources) || 'Data: NHL stats API, Sportsbook Review, Covers, Daily Faceoff.'));
+    h('span', null, (window.BL_CONFIG && window.BL_CONFIG.sources) || 'Data: NHL stats API, Sportsbook Review, Covers, Daily Faceoff.',
+      canInstall() ? [' · ', h('button', { class: 'linkish', onclick: showInstall }, 'Install the app')] : null));
+}
+
+// ---------- install as a phone app (hosted site only) ----------
+// Android and desktop Chrome/Edge offer an install prompt; iPhone and iPad install from the Share menu.
+const INSTALL = { evt: null };
+const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function standalone() { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } }
+function canInstall() { return SITE && !standalone() && (!!INSTALL.evt || IS_IOS); }
+function installNow() {
+  const e = INSTALL.evt; if (!e) return;
+  e.prompt();
+  Promise.resolve(e.userChoice).then(c => { INSTALL.evt = null; if (c && c.outcome === 'accepted') lsSet('bl.install.v1', { done: 1 }); render(); }).catch(() => {});
+}
+function showInstall() { // footer link: bring the install card back even if it was put off
+  if (INSTALL.evt) { installNow(); return; }
+  lsSet('bl.install.v1', {}); S.tab = 'board'; lsSet('bl.tab', S.tab); render(); window.scrollTo(0, 0);
+}
+function shareGlyph() {
+  return s('svg', { viewBox: '0 0 24 24', width: 16, height: 16, 'aria-hidden': 'true', class: 'glyph' },
+    s('path', { d: 'M12 3v12M7.5 7.5 12 3l4.5 4.5M5 11v9h14v-9', fill: 'none', stroke: 'currentColor', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+}
+function installCard() {
+  if (!canInstall()) return null;
+  const st = lsGet('bl.install.v1', {}); if (st.done || (st.snooze && Date.now() < st.snooze)) return null;
+  const later = () => { lsSet('bl.install.v1', { snooze: Date.now() + 30 * 864e5 }); render(); };
+  const icon = h('img', { src: 'icons/icon-192.png', alt: '', width: 40, height: 40, class: 'install-icon' });
+  if (INSTALL.evt) return h('div', { class: 'install', role: 'region', 'aria-label': 'Install the app' }, icon,
+    h('div', { class: 'install-txt' }, h('strong', null, 'Get Blueline on your phone'), h('span', null, 'Install it as an app. It opens full screen and keeps the latest data when you\'re offline.')),
+    h('div', { class: 'install-act' }, h('button', { class: 'btn primary', onclick: installNow }, 'Install'), h('button', { class: 'btn ghost', onclick: later }, 'Not now')));
+  return h('div', { class: 'install', role: 'region', 'aria-label': 'Install the app' }, icon,
+    h('div', { class: 'install-txt' }, h('strong', null, 'Put Blueline on your home screen'), h('span', null, 'Tap ', shareGlyph(), ' Share, then ', h('b', null, 'Add to Home Screen'), '. It opens full screen like any other app.')),
+    h('div', { class: 'install-act' }, h('button', { class: 'btn ghost', onclick: later }, 'Got it')));
+}
+if (SITE) {
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); INSTALL.evt = e; render(); });
+  addEventListener('appinstalled', () => { INSTALL.evt = null; lsSet('bl.install.v1', { done: 1 }); render(); });
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 }
 
 /*PROPS*/

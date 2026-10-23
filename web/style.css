@@ -255,7 +255,9 @@ input[type="range"] { width: 100%; accent-color: var(--blue); }
 
 @media (max-width: 560px) {
   .feed-status { margin-left: 0; width: 100%; }
-  .tabs { width: 100%; overflow-x: auto; }
+  .tabs { width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .tab { flex: 1 1 auto; padding: 7px 4px; font-size: 13px; text-align: center; } /* all five tabs fit on a phone */
+  .tab .ct { margin-left: 2px; }
   .kpi .v { font-size: 28px; }
   .adj-row { grid-template-columns: 1fr 56px; } .adj-row input { grid-column: 1 / -1; grid-row: 2; }
   .goalies { grid-template-columns: 1fr; }
@@ -346,3 +348,11 @@ main { padding-bottom: 96px; }
 .pg-n { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pg-s { font-size: 13px; white-space: nowrap; }
 .pg-s small { color: var(--ink-3); font-size: 11px; }
+
+/* install as an app (hosted site) */
+.install { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); background: var(--board); border-radius: var(--r); box-shadow: var(--shadow); flex-wrap: wrap; }
+.install-icon { width: 40px; height: 40px; border-radius: 10px; flex: none; }
+.install-txt { display: grid; gap: 2px; flex: 1 1 220px; min-width: 0; font-size: 13px; color: var(--ink-2); }
+.install-txt strong { color: var(--ink); font-size: 14px; }
+.install-act { display: flex; gap: 8px; margin-left: auto; }
+.glyph { vertical-align: -3px; }

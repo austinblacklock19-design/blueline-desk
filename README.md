@@ -37,6 +37,36 @@ The Odds API ──┘        (GitHub Action)            └─> site/ ──> G
 Share that link with friends. Each person's bets save in their own browser (My Bets has Export and Import
 to move them between devices).
 
+## Put it on your phone
+
+The site installs as an app: its own icon on the home screen, full screen, and it opens offline with the last
+data it saw. There's no app store involved, and it updates itself whenever the site does.
+
+- **iPhone or iPad:** open the site in Safari, tap **Share**, then **Add to Home Screen**.
+- **Android:** open it in Chrome and tap **Install** on the card at the top of the page (or **⋮ → Add to Home
+  screen**).
+- Open the link in the phone's browser. The built-in browsers inside messaging and social apps can't install it.
+
+Bets save on each device, and on an iPhone the installed app keeps its own copy, separate from Safari. To
+move bets over, use **My Bets → Export** in one and **Import** in the other.
+
+### App stores (optional)
+
+The installable site covers friends and family. A store listing is extra work. As of October 2026:
+
+- **Google Play:** a $25 one-time account. New personal accounts must run a closed test with at least 12
+  testers for 14 days in a row before they can publish, and friends and family can be those testers. The
+  installable site can be packaged for Play with Google's Trusted Web Activity tools (Bubblewrap or
+  PWABuilder). Play's gambling policy restricts odds-tracking apps that carry sportsbook ads or links, so keep
+  the app free of them.
+- **Apple App Store:** $99 a year. TestFlight shares a build with up to 10,000 people by link, but every
+  build must pass Apple's beta review. Apple rejects apps that are only a repackaged website (guideline 4.2),
+  and betting-related apps get extra review time. Building for iPhone also needs a Mac or a macOS build
+  service.
+- **Android outside the store:** an app file (APK) can still be shared directly. Google's developer
+  verification reaches every country in 2027, and its free limited-distribution account covers up to 20
+  devices.
+
 ## What updates when
 
 | Time (Central) | What runs |
@@ -119,11 +149,13 @@ pipeline/lib/odds.js    The Odds API parsing: game lines, props, team and player
 pipeline/headshots.py   rebuilds the headshot sprite sheets in web/p/
 model/team.js           team model (shared by the site and the tests)
 model/props.js          player-props model
-web/                    the app: app.js, props-ui.js, chat.js, style.css, index.html, config.js
+web/                    the app: app.js, props-ui.js, chat.js, style.css, index.html, config.js,
+                        manifest.webmanifest and sw.js (install and offline), icons/
 worker/                 optional chat proxy (Cloudflare Worker)
 data/                   the season so far; the Action commits updates here
 tests/                  model checks and a full offline replay of the pipeline on real data
-scripts/                build-site.js (site/), build-artifact.js (single-file Claude artifact), serve.js
+scripts/                build-site.js (site/), build-artifact.js (single-file Claude artifact), serve.js,
+                        make-icons.py (redraws the app icons)
 ```
 
 ## Hosting elsewhere
