@@ -14,6 +14,7 @@ Rules:
 - Be brief: under 140 words unless asked for more. Bullets for lists. American odds. Name the game like "PIT @ COL".
 - Player props (shots on goal, points, anytime goal, assists, goalie saves): the PROPS section lists the model's top projections. Use player_report for one player's projection, every line and his game log, and price_prop to price a specific line and price. If no book line is loaded, give the fair price and ask what their book offers.
 - Prop bets are void if the player doesn't play (or the goalie doesn't start); say so when it matters.
+- Parlays and same-game parlays: always price them with price_parlay, which prices the legs together with their correlation. Never multiply leg probabilities yourself. Report the chance all legs hit, the fair price, the expected value at the person's price (after any profit boost) and the shortest price worth taking; if it's negative EV, say so and suggest fewer or better-aligned legs.
 - If gambling seems to be causing problems, mention 1-800-GAMBLER. This tool is for adults of legal betting age.`;
 
 function chatData() {
@@ -66,6 +67,29 @@ function findPlayer(q) { // name, last name or id among players in upcoming game
 }
 const MKT_ALIAS = { sog: 'SOG', shots: 'SOG', 'shots on goal': 'SOG', points: 'PTS', pts: 'PTS', point: 'PTS', goal: 'G', goals: 'G', 'anytime goal': 'G', anytime: 'G', assists: 'A', assist: 'A', ast: 'A', saves: 'SV', sv: 'SV' };
 function findGame(id) { id = String(id).replace(/\D/g, ''); return D.allGames[id] || null; }
+// ---------- parlay helpers for the chat ----------
+function findParlayGame(q) {
+  const byId = findGame(q); if (byId && !byId.final) return byId;
+  const up = D.gamesArr.filter(g => !g.final).slice(0, 60), t = String(q || '').toLowerCase();
+  const teams = Object.keys(S.teamMap).filter(a => new RegExp('\\b' + a.toLowerCase() + '\\b').test(t) || t.includes(teamName(a).toLowerCase()) || t.includes(teamName(a).split(' ').pop().toLowerCase()));
+  return up.find(g => teams.includes(g.away) && teams.includes(g.home)) || up.find(g => teams.includes(g.away) || teams.includes(g.home)) || null;
+}
+function chatLeg(g, rows, x) {
+  const ty = String(x.type || '').toLowerCase(), side = String(x.team || '').toUpperCase() === g.home ? 'home' : String(x.team || '').toUpperCase() === g.away ? 'away' : null;
+  const needTeam = () => { if (!side) throw new Error('Leg "' + ty + '" needs team ' + g.away + ' or ' + g.home + '.'); return side; };
+  if (ty === 'moneyline') return { kind: 'ml', side: needTeam() };
+  if (ty === 'regulation_win') return { kind: 'reg', side: needTeam() };
+  if (ty === 'puck_line') return { kind: 'pl', side: needTeam(), line: x.line != null ? +x.line : -1.5 };
+  if (ty === 'total') { if (x.line == null || !x.side) throw new Error('Total needs side and line.'); return { kind: 'total', side: x.side, line: +x.line }; }
+  if (ty === 'team_total') { if (x.line == null || !x.side) throw new Error('Team total needs side and line.'); return { kind: 'tt', team: needTeam(), side: x.side, line: +x.line }; }
+  const q = norm(x.player || ''); if (!q) throw new Error('Player leg needs a player.');
+  const r = rows.find(r => norm(playerInfo(r.pid).n) === q) || rows.find(r => norm(playerInfo(r.pid).n).split(' ').pop() === q.split(' ').pop() && (q.split(' ').length < 2 || norm(playerInfo(r.pid).n)[0] === q[0]));
+  if (!r) throw new Error('No projected player named ' + x.player + ' in ' + g.away + ' @ ' + g.home + '.');
+  const k = Math.max(1, Math.round(+x.count || 1));
+  const kind = ty === 'goal' ? 'goal' : ty === 'points' ? 'point' : ty === 'assists' ? 'assist' : ty === 'shots' ? 'sog' : null;
+  if (!kind) throw new Error('Unknown leg type ' + ty + '.');
+  return { kind, pid: r.pid, team: r.side, k: kind === 'sog' ? Math.max(2, k) : k };
+}
 function chatToolDefs() {
   return [
     { name: 'game_detail', description: 'Full breakdown of one game: team stats, splits, head to head, goalie notes, every market with model/market/EV, and prices at every book. Use before recommending a specific game.',
@@ -113,6 +137,33 @@ function chatToolDefs() {
         const e = propEval(r.pmf[m], inp.line, bk), ev = inp.side === 'over' ? e.evO : e.evU, p = inp.side === 'over' ? e.bO : e.bU, k = inp.side === 'over' ? e.kO : e.kU;
         chatNote('Priced ' + propLabel(r.pid, m, inp.side, inp.line) + ' at ' + BL.fmtAm(inp.price));
         return { player: playerInfo(r.pid).n, gameId: r.g.id, pid: r.pid, market: m, line: inp.line, side: inp.side, price: BL.fmtAm(inp.price), modelProbability: pct(inp.side === 'over' ? e.pO : e.pU, 1), blendedProbability: pct(p, 1), fairPrice: BL.fmtAm(inp.side === 'over' ? e.fairO : e.fairU), ev: sgnPct(ev), kellyStake: money((k || 0) * (S.ledger.bankroll || 0)), clearsValueBar: ev >= S.params.minEdge }; } },
+    { name: 'price_parlay', description: 'Price a same-game parlay with the legs priced together (correlation included), not multiplied. Returns the chance every leg hits, fair odds, each leg alone and given the others, and with the book price and any profit boost the expected value and the shortest price worth taking.',
+      inputSchema: { type: 'object', properties: {
+        game: { type: 'string', description: 'Game id, or the two teams like "NSH @ LAK"' },
+        legs: { type: 'array', description: 'Up to 10 legs', items: { type: 'object', properties: {
+          type: { type: 'string', enum: ['moneyline', 'regulation_win', 'puck_line', 'total', 'team_total', 'goal', 'points', 'assists', 'shots'] },
+          team: { type: 'string', description: 'Team abbreviation for moneyline, regulation_win, puck_line and team_total' },
+          side: { type: 'string', enum: ['over', 'under'], description: 'For total and team_total' },
+          line: { type: 'number', description: 'Puck line like -1.5, total like 6.5, team total like 3.5' },
+          player: { type: 'string', description: 'Player name for goal, points, assists and shots' },
+          count: { type: 'number', description: 'Minimum for player legs: 1 = anytime goal or 1+ point, 2 = 2+ goals, 3 = 3+ shots' } }, required: ['type'] } },
+        price: { type: 'number', description: 'The book\'s American price for the whole parlay before any boost, e.g. 750' },
+        boost: { type: 'number', description: 'Profit boost in percent, e.g. 30' } }, required: ['game', 'legs'] },
+      execute: (inp) => {
+        const g = findParlayGame(inp.game); if (!g) throw new Error('No upcoming game matches "' + inp.game + '".');
+        const inpts = parlayInputs(g); if (!inpts) throw new Error('No model for that game yet.');
+        const legs = (inp.legs || []).map(x => chatLeg(g, inpts.rows, x));
+        if (!legs.length) throw new Error('Give at least one leg.');
+        const c = parlayCalc(g, legs); if (!c || c.error) throw new Error(c && c.error || 'Could not price that parlay.');
+        const u = c.use, boost = (+inp.boost || 0) / 100, price = inp.price != null ? parsePrice(inp.price) : null;
+        const e = price != null ? BLX.evaluate(u.p, price, boost) : null;
+        chatNote('Priced a ' + legs.length + '-leg parlay on ' + g.away + ' @ ' + g.home);
+        return { game: g.away + ' @ ' + g.home, gameId: g.id, legs: legs.map((l, i) => ({ leg: legLabel(g, l), alone: pct(u.each[i].own, 1), ifTheRestHit: legs.length > 1 ? pct(u.each[i].givenOthers, 1) : null })),
+          chanceAllHit: pct(u.p, 2), basedOn: c.res.length > 1 ? 'model blended with the market' : 'model only (no lines loaded)', byVersion: c.res.map(r => r.label + ' ' + pct(r.p, 2)).join(', '),
+          ifIndependent: pct(u.indep, 2), fairOdds: BL.fmtAm(u.fairAm), shortestPriceWorthIt: BL.fmtAm(BLX.minPrice(u.p, boost, 0)) + (boost ? ' before the boost' : ''),
+          atYourPrice: e ? { price: BL.fmtAm(price), afterBoost: boost ? BL.fmtAm(e.am) : null, breakEven: pct(e.breakEven, 2), ev: sgnPct(e.ev), kellyStake: money(BL.kellyStake(u.p, e.am, S.params) * (S.ledger.bankroll || 0), 2) } : null,
+          note: 'Player legs are tied to their team\'s goals; linemates assisting each other is not modelled, so linemate stacks are priced a little low. Goalie: ' + JSON.stringify(ctxFor(g)) };
+      } },
     { name: 'propose_prop', description: 'Show the person a player-prop bet slip they can confirm to record in My Bets. Does not place anything at a sportsbook.',
       inputSchema: { type: 'object', properties: { player: { type: 'string' }, market: { type: 'string', description: 'shots, points, goal, assists or saves' }, line: { type: 'number' }, side: { type: 'string', enum: ['over', 'under'] }, price: { type: 'number', description: 'American odds the person can get' }, stake: { type: 'number' }, why: { type: 'string' } }, required: ['player', 'market', 'line', 'side', 'price'] },
       execute: (inp) => { const r = findPlayer(inp.player); if (!r) throw new Error('No player named ' + inp.player + ' in an upcoming game.');

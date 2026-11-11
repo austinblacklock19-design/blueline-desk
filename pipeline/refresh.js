@@ -130,7 +130,8 @@ async function main() {
   for (const [gid, o] of Object.entries(prev)) {
     const started = have.has(+gid) || (startOf[gid] && Date.parse(startOf[gid]) <= NOW.getTime());
     if (!started || closing[gid] || !o || !o.books) continue;
-    const bk = o.books.DraftKings ? 'DraftKings' : Object.keys(o.books).find(b => b !== 'Opener' && o.books[b].ml);
+    const pref = [CFG.homeBook, 'DraftKings'].filter(Boolean).find(b => o.books[b] && o.books[b].ml); // your book's close first
+    const bk = pref || Object.keys(o.books).find(b => b !== 'Opener' && o.books[b].ml);
     if (bk) closing[gid] = Object.assign({ book: bk }, o.books[bk]);
   }
   docs.closing = { updated: stamp, games: closing };
@@ -169,7 +170,7 @@ async function main() {
           const left = creditsLeft(); if (left != null && left - ODDS.PROP_COST < reserve) { saved++; continue; }
           const evOdds = await odds(`/v4/sports/${ODDS.SPORT}/events/${ev.id}/odds?markets=${Object.keys(ODDS.PROP_MARKETS).join(',')}&${q}`, { optional: true });
           if (!evOdds) continue;
-          const r = ODDS.parseEventProps(evOdds, g, players); out[g[1]] = r.props; unmatched += r.unmatched.length; fetched++;
+          const r = ODDS.parseEventProps(evOdds, g, players, CFG.homeBook); out[g[1]] = r.props; unmatched += r.unmatched.length; fetched++;
         }
         // keep earlier lines for games still on the schedule (or just started), so bets on them can still be read back
         for (const [gid, p] of Object.entries(propsPrev)) if (!out[gid] && sched.some(g => String(g[1]) === gid)) out[gid] = p;

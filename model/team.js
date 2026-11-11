@@ -108,6 +108,13 @@
     if (ctx.awayB2B) { la *= 1 - prm.b2b; lh *= 1 + prm.b2b; }
     la = Math.max(0.6, la - (ctx.homeGoalie || 0));
     lh = Math.max(0.6, lh - (ctx.awayGoalie || 0));
+    return fromLambdas(lh, la, prm);
+  }
+
+  // The score grid and every game price for given regulation expected goals (lh home, la away).
+  // predict() uses it; the parlay pricer uses it to re-fit a game to market prices.
+  function fromLambdas(lh, la, prm) {
+    prm = Object.assign({}, DEFAULTS, prm || {});
     const M = 12, ph = poisson(lh, M), pa = poisson(la, M);
     // regulation matrix m[h][a]
     let m = [], s = 0;
@@ -215,6 +222,6 @@
     return { n, acc: n ? hits / n : 0, logLoss: n ? ll / n : 0, logLossBase: n ? llBase / n : 0, brier: n ? br / n : 0, rows };
   }
 
-  const api = { DEFAULTS, amToDec, amToProb, probToAm, fmtAm, noVig, ev, kellyStake, dayBefore, playedOn, buildRatings, predict, evaluate, bestLines, backtest };
+  const api = { DEFAULTS, amToDec, amToProb, probToAm, fmtAm, noVig, ev, kellyStake, dayBefore, playedOn, buildRatings, predict, fromLambdas, evaluate, bestLines, backtest };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BL = api;
 })(typeof window !== 'undefined' ? window : globalThis);

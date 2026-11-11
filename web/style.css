@@ -356,3 +356,28 @@ main { padding-bottom: 96px; }
 .install-txt strong { color: var(--ink); font-size: 14px; }
 .install-act { display: flex; gap: 8px; margin-left: auto; }
 .glyph { vertical-align: -3px; }
+
+/* same-game parlay */
+.parlay { display: grid; gap: 12px; }
+.parlay-pick { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.parlay-pick select { border: 1px solid var(--line); background: var(--board); border-radius: 7px; padding: 7px 9px; min-width: 0; }
+.parlay-pick > select { flex: 1 1 220px; }
+.parlay-player { display: flex; gap: 8px; flex: 2 1 320px; flex-wrap: wrap; }
+.parlay-player select:first-child { flex: 2 1 170px; }
+.parlay-player select:nth-child(2) { flex: 1 1 110px; }
+.parlay-legs { display: grid; gap: 6px; }
+.parlay-leg { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; grid-template-areas: "name own given x"; gap: 6px 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--board-2); }
+.parlay-leg .pl-name { grid-area: name; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.parlay-leg .pl-own { grid-area: own; } .parlay-leg .pl-given { grid-area: given; } .parlay-leg .pl-x { grid-area: x; }
+.pl-num { font-family: var(--f-mono); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pl-num .muted { font-family: var(--f-body, inherit); font-size: 12px; }
+.parlay-inputs { align-items: end; }
+.parlay-results { display: grid; gap: 8px; }
+.parlay-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.parlay-kpis .kpi .v { font-size: 26px; }
+.parlay-ev { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; font-size: 14px; }
+@media (max-width: 560px) {
+  .parlay-leg { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "name name x" "own given given"; }
+  .parlay-leg .pl-given { justify-self: end; }
+  .parlay-kpis { grid-template-columns: 1fr; }
+}

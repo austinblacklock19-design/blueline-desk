@@ -68,7 +68,12 @@ function teamEnv(g, team) { // expected goals this game / vs an average opponent
 function bookLine(gid, pid, mkt) {
   const my = S.myLines[gid + ':' + pid + ':' + mkt]; if (my) return { line: my[0], over: my[1], under: my[2], book: 'My book', mine: true };
   const p = S.feed.props && S.feed.props.games && S.feed.props.games[gid] && S.feed.props.games[gid][pid] && S.feed.props.games[gid][pid][mkt];
-  return p ? { line: p[0], over: p[1], under: p[2], book: p[3] || 'Book' } : null;
+  if (!p) return null;
+  if (S.homeBook && p[3] !== S.homeBook) { // your book's own line when it isn't the best one ([book, line, over, under])
+    const hb = p[4];
+    return hb && hb[0] === S.homeBook ? { line: hb[1], over: hb[2], under: hb[3], book: hb[0] } : null;
+  }
+  return { line: p[0], over: p[1], under: p[2], book: p[3] || 'Book' };
 }
 function propEval(pmf, line, bk) { // probabilities, fair prices and (with a book line) EV for over and under
   const L = bk && bk.line != null ? bk.line : line;

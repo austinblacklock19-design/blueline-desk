@@ -149,7 +149,9 @@ function marketsFor(g) {
   const books = booksFor(g), P = S.params, w = P.marketWeight, out = [];
   const entries = Object.entries(books).filter(([k]) => k !== 'Opener'); // the opening line is history, not a price you can take
   function push(market, side, label, line, pModel, sidePrices, fairList) {
-    const valid = sidePrices.filter(x => x.price != null);
+    let valid = sidePrices.filter(x => x.price != null);
+    // with a home book set, bets are priced where you can place them; the fair price still uses every book
+    if (S.homeBook) valid = valid.filter(x => x.book === S.homeBook || x.book === 'My book');
     if (!valid.length) return;
     let best = valid[0]; for (const x of valid) if (BL.amToDec(x.price) > BL.amToDec(best.price)) best = x;
     const pFair = fairList.length ? fairList.reduce((a, b) => a + b, 0) / fairList.length : BL.amToProb(best.price);
@@ -186,7 +188,7 @@ function marketsFor(g) {
   }
   return out;
 }
-const MKT_NAME = { ML: 'Moneyline', PL: 'Puck line', TOT: 'Total' };
+const MKT_NAME = { ML: 'Moneyline', PL: 'Puck line', TOT: 'Total', PROP: 'Player props', PARLAY: 'Parlays' };
 
 // ---------- ledger (bets) ----------
 let dbRef = null, ledgerTimer = null;
@@ -201,6 +203,7 @@ function saveLedger() {
 }
 function gradeBet(b) {
   if (b.market === 'PROP') return gradeProp(b);
+  if (b.market === 'PARLAY') return gradeParlay(b);
   if (b.manual && b.status !== 'open') return b.status;
   const r = D && D.resById[b.gameId]; if (!r) return 'open';
   if (b.market === 'ML') { const hw = r.hs > r.as; return (b.side === 'home') === hw ? 'won' : 'lost'; }
@@ -210,7 +213,7 @@ function gradeBet(b) {
 }
 function betPnl(b, st) { st = st || gradeBet(b); if (st === 'won') return b.stake * (BL.amToDec(b.price) - 1); if (st === 'lost') return -b.stake; return 0; }
 function betClv(b) { // closing line value vs the archived closing price
-  if (b.market === 'PROP') return null;
+  if (b.market === 'PROP' || b.market === 'PARLAY') return null;
   const c = S.feed && S.feed.closing && S.feed.closing.games && S.feed.closing.games[b.gameId]; if (!c) return null;
   let f = null;
   if (b.market === 'ML' && c.ml) { const nv = BL.noVig(c.ml[0], c.ml[1]); if (nv) f = b.side === 'away' ? nv.a : nv.b; }
@@ -598,7 +601,8 @@ function renderDrawer() {
     h('div', { class: 'drawer-b' },
       hero,
       S.slip && S.slip.gameId === g.id && !S.slip.prop ? slipPanel() : null,
-      h('section', { class: 'panel' }, h('div', { class: 'panel-h' }, h('h2', null, 'Markets'), h('span', { class: 'small muted' }, 'Stake = ' + pct(S.params.kelly, 0) + ' Kelly on a ' + money(bank) + ' bankroll, capped at ' + pct(S.params.kellyCap, 1))), h('div', { class: 'panel-b' }, mTable)),
+      h('section', { class: 'panel' }, h('div', { class: 'panel-h' }, h('h2', null, 'Markets'), h('span', { class: 'small muted' }, (S.homeBook ? 'Priced at ' + S.homeBook + '. ' : '') + 'Stake = ' + pct(S.params.kelly, 0) + ' Kelly on a ' + money(bank) + ' bankroll, capped at ' + pct(S.params.kellyCap, 1))), h('div', { class: 'panel-b' }, mTable)),
+      parlayPanel(g),
       h('section', { class: 'panel' }, h('div', { class: 'panel-h' }, h('h2', null, 'Analyst')), h('div', { class: 'panel-b ai' }, h('div', { class: 'brief-actions' }, aiBtn), aiOut, h('div', { class: 'ai-ask' }, q, askBtn))),
       scout,
       propsGameSection(g),
@@ -692,7 +696,7 @@ function viewBets() {
   const ord = settled.slice().sort((a, b) => a.b.date.localeCompare(b.b.date) || a.b.placedAt.localeCompare(b.b.placedAt));
   let run = L.bankroll; const pts = [{ v: run, label: 'Start', date: ord[0] ? ord[0].b.date : null }];
   ord.forEach(x => { run += betPnl(x.b, x.st); pts.push({ v: run, label: x.b.label + ' (' + x.st + ')', date: x.b.date }); });
-  const byMkt = ['ML', 'PL', 'TOT'].map(k => { const xs = settled.filter(x => x.b.market === k); const pl = xs.reduce((a, x) => a + betPnl(x.b, x.st), 0), rk = xs.reduce((a, x) => a + x.b.stake, 0); return { k, n: xs.length, pl, roi: rk ? pl / rk : null }; });
+  const byMkt = ['ML', 'PL', 'TOT', 'PROP', 'PARLAY'].filter(k => k === 'ML' || k === 'PL' || k === 'TOT' || settled.some(x => x.b.market === k)).map(k => { const xs = settled.filter(x => x.b.market === k); const pl = xs.reduce((a, x) => a + betPnl(x.b, x.st), 0), rk = xs.reduce((a, x) => a + x.b.stake, 0); return { k, n: xs.length, pl, roi: rk ? pl / rk : null }; });
 
   const settings = h('form', { class: 'form-grid', onsubmit: e => { e.preventDefault(); const f = new FormData(e.target); const br = +f.get('br'), un = +f.get('un'); if (br > 0) L.bankroll = br; if (un > 0) L.unit = un; saveLedger(); toast('Bankroll saved'); render(); } },
     h('div', { class: 'field' }, h('label', { for: 'bk-br' }, 'Starting bankroll ($)'), h('input', { id: 'bk-br', name: 'br', inputmode: 'decimal', value: L.bankroll })),
@@ -792,7 +796,7 @@ function viewModel() {
   return h('div', { class: 'view' },
     h('div', { class: 'slate-bar' }, h('div', null, h('div', { class: 'eyebrow' }, 'Model'), h('h1', { class: 'h-display', style: { fontSize: 'clamp(28px,4vw,40px)' } }, 'How the numbers are made')), h('button', { class: 'btn', onclick: () => { S.params = Object.assign({}, BL.DEFAULTS); lsSet('bl.params.v1', S.params); derive(); render(); toast('Model reset to defaults'); } }, 'Reset to defaults')),
     h('div', { class: 'lab-grid' },
-      h('section', { class: 'panel' }, h('div', { class: 'panel-h' }, h('h2', null, 'Dials')), h('div', { class: 'panel-b' }, sliders)),
+      h('section', { class: 'panel' }, h('div', { class: 'panel-h' }, h('h2', null, 'Dials')), h('div', { class: 'panel-b' }, homeBookPicker(), sliders)),
       h('div', { style: { display: 'grid', gap: '20px', alignContent: 'start' } },
         h('section', { class: 'panel' }, h('div', { class: 'panel-h' }, h('h2', null, 'Track record'), h('span', { class: 'small muted' }, 'Walk-forward: each game predicted using only earlier games')), h('div', { class: 'panel-b', style: { display: 'grid', gap: '14px' } },
           h('div', { class: 'kpis', style: { gridTemplateColumns: 'repeat(3, minmax(0,1fr))' } },
@@ -854,6 +858,7 @@ if (SITE) {
 }
 
 /*PROPS*/
+/*PARLAY*/
 /*CHAT*/
 // ---------- boot ----------
 function setFeed(docs) {

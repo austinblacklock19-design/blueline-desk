@@ -50,6 +50,19 @@ data it saw. There's no app store involved, and it updates itself whenever the s
 Bets save on each device, and on an iPhone the installed app keeps its own copy, separate from Safari. To
 move bets over, use **My Bets → Export** in one and **Import** in the other.
 
+## Parlays and your sportsbook
+
+- **Same-game parlay checker:** open any game, add legs (moneyline, regulation win, puck line, totals, team
+  totals, goals, points, assists, shots), and type the price your book shows plus any profit boost. It shows
+  the chance every leg hits, the fair price, each leg's chance once the others hit, the expected value, the
+  shortest price worth taking and a stake, and "Track parlay" saves it to My Bets, where it grades itself from
+  the box score. The chat can price parlays too ("price NSH ML + Stamkos goal + Forsberg goal at +750 with a
+  30% boost").
+- **Your sportsbook:** Model tab → Dials → Your sportsbook. With it set (for example FanDuel), expected value
+  and stakes use that book's prices only, so the board only flags bets you can actually place; the fair price
+  still comes from every book. The data job also keeps FanDuel's own prop lines and archives closing lines from
+  FanDuel first (`homeBook` in `pipeline/config.json`).
+
 ### App stores (optional)
 
 The installable site covers friends and family. A store listing is extra work. As of October 2026:
@@ -127,6 +140,15 @@ model's expected goals scale his goals and assists. Shots and points use negativ
 Goalies get expected shots against from both teams' shot rates, a save rate pulled toward league average,
 and a small chance of being pulled.
 
+**Parlays** (`model/parlay.js`). Same-game parlays are priced as one bet, not by multiplying legs. The team
+model's score grid says how the game can end (who wins, in regulation, overtime or a shootout, and by how much),
+and player legs follow from how many goals each team scores: each goal goes to a player in proportion to his
+share of his team's goals, and others pick up assists at their rates. So two scorers on one team need a
+high-scoring game, a team's scorers help its moneyline, and the other team's scorers hurt it. Shots legs are
+tied to goals through the player's shooting rate. Linemates setting each other up is not modelled, so a stack
+of linemates comes out a little less likely than it really is. With sportsbook lines loaded, the game is
+re-fit to the blended moneyline and total first, the same blend the rest of the page uses.
+
 **How good is it?** On the first 120 games of this season (through October 16), predicting each game only
 from earlier games:
 - The team model picked 59.2% of winners. Home teams won 55.0% of those games, and the model's log loss
@@ -149,7 +171,8 @@ pipeline/lib/odds.js    The Odds API parsing: game lines, props, team and player
 pipeline/headshots.py   rebuilds the headshot sprite sheets in web/p/
 model/team.js           team model (shared by the site and the tests)
 model/props.js          player-props model
-web/                    the app: app.js, props-ui.js, chat.js, style.css, index.html, config.js,
+model/parlay.js         same-game parlay pricer (legs priced together, with their correlation)
+web/                    the app: app.js, props-ui.js, parlay-ui.js, chat.js, style.css, index.html, config.js,
                         manifest.webmanifest and sw.js (install and offline), icons/
 worker/                 optional chat proxy (Cloudflare Worker)
 data/                   the season so far; the Action commits updates here

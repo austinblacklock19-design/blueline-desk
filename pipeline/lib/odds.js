@@ -59,9 +59,11 @@ function parseGameOdds(events, schedule) {
   return { games: out, report };
 }
 
-// one event's prop markets -> {playerId: {SOG: [line, over, under, book], ...}}
+// one event's prop markets -> {playerId: {SOG: [line, over, under, book, home?], ...}}
 // For each player and market the line most books offer is used, at the book with the best over price.
-function parseEventProps(ev, game, players) {
+// home (only when homeBook offered the market and isn't already the best book): [homeBook, line, over, under],
+// its price at the same line if it has one, otherwise at its own line.
+function parseEventProps(ev, game, players, homeBook) {
   const team = { [game[3]]: 1, [game[4]]: 1 };
   const byName = {};
   for (const [pid, p] of Object.entries(players)) if (team[p[1]]) { const n = norm(p[0]); byName[n] = byName[n] || []; byName[n].push(pid); }
@@ -87,7 +89,13 @@ function parseEventProps(ev, game, players) {
     const cnt = {}; list.forEach(x => cnt[x.line] = (cnt[x.line] || 0) + 1);
     const line = +Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a] || Math.abs(a - 2.5) - Math.abs(b - 2.5))[0];
     const best = list.filter(x => x.line === line).sort((a, b) => dec(b.over) - dec(a.over))[0];
-    (out[pid] = out[pid] || {})[mk] = [line, best.over, best.under, best.book];
+    const row = [line, best.over, best.under, best.book];
+    if (homeBook && best.book !== homeBook) {
+      const mine = list.filter(x => x.book === homeBook);
+      const h = mine.find(x => x.line === line) || mine[0];
+      if (h) row.push([homeBook, h.line, h.over, h.under]);
+    }
+    (out[pid] = out[pid] || {})[mk] = row;
   }
   return { props: out, unmatched: [...unmatched] };
 }

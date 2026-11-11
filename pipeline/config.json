@@ -6,5 +6,6 @@
   "leagueTimeZone": "America/New_York",
   "propsWindowHours": 30,
   "oddsReserveCredits": 280,
-  "rosterRefreshHours": 36
+  "rosterRefreshHours": 36,
+  "homeBook": "FanDuel"
 }
