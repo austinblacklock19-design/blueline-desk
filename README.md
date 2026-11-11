@@ -50,19 +50,6 @@ data it saw. There's no app store involved, and it updates itself whenever the s
 Bets save on each device, and on an iPhone the installed app keeps its own copy, separate from Safari. To
 move bets over, use **My Bets → Export** in one and **Import** in the other.
 
-## Parlays and your sportsbook
-
-- **Same-game parlay checker:** open any game, add legs (moneyline, regulation win, puck line, totals, team
-  totals, goals, points, assists, shots), and type the price your book shows plus any profit boost. It shows
-  the chance every leg hits, the fair price, each leg's chance once the others hit, the expected value, the
-  shortest price worth taking and a stake, and "Track parlay" saves it to My Bets, where it grades itself from
-  the box score. The chat can price parlays too ("price NSH ML + Stamkos goal + Forsberg goal at +750 with a
-  30% boost").
-- **Your sportsbook:** Model tab → Dials → Your sportsbook. With it set (for example FanDuel), expected value
-  and stakes use that book's prices only, so the board only flags bets you can actually place; the fair price
-  still comes from every book. The data job also keeps FanDuel's own prop lines and archives closing lines from
-  FanDuel first (`homeBook` in `pipeline/config.json`).
-
 ### App stores (optional)
 
 The installable site covers friends and family. A store listing is extra work. As of October 2026:
@@ -79,6 +66,19 @@ The installable site covers friends and family. A store listing is extra work. A
 - **Android outside the store:** an app file (APK) can still be shared directly. Google's developer
   verification reaches every country in 2027, and its free limited-distribution account covers up to 20
   devices.
+
+## Parlays and your sportsbook
+
+- **Same-game parlay checker:** open any game, add legs (moneyline, regulation win, puck line, totals, team
+  totals, goals, points, assists, shots), and type the price your book shows plus any profit boost. It shows
+  the chance every leg hits, the fair price, each leg's chance once the others hit, the expected value, the
+  shortest price worth taking and a stake, and "Track parlay" saves it to My Bets, where it grades itself from
+  the box score. The chat can price parlays too ("price NSH ML + Stamkos goal + Forsberg goal at +750 with a
+  30% boost").
+- **Your sportsbook:** Model tab → Dials → Your sportsbook. With it set (for example FanDuel), expected value
+  and stakes use that book's prices only, so the board only flags bets you can actually place; the fair price
+  still comes from every book. The data job also keeps FanDuel's own prop lines and archives closing lines from
+  FanDuel first (`homeBook` in `pipeline/config.json`).
 
 ## What updates when
 
